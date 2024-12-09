@@ -2,6 +2,8 @@ import { Address } from 'viem';
 import { createViemPublicClient } from '../viem/createViemPublicClient.js';
 import { ToolConfig } from './allTools.js';
 import { formatEther } from 'viem';
+import { fuelProvider, myWallet } from '../fuels/createFuelClient.js';
+import { BN } from 'fuels';
 
 interface GetBalanceArgs {
     wallet: Address;
@@ -32,7 +34,6 @@ export const getBalanceTool: ToolConfig<GetBalanceArgs> = {
 };
 
 async function getBalance(wallet: Address) {
-    const publicClient = createViemPublicClient();
-    const balance = await publicClient.getBalance({ address: wallet });
-    return formatEther(balance);
+    const balance: BN = await (await myWallet()).getBalance((await fuelProvider()).getBaseAssetId());
+    return balance.toString();
 }
